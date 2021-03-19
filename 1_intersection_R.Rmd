@@ -1,0 +1,68 @@
+---
+title: "Intersection sous R"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r, echo=FALSE}
+library(knitr)
+```
+
+
+```{r}
+library(sf, verbose=FALSE)
+library(dplyr, verbose=FALSE)
+```
+
+Chargement des données carroyées et des quartiers de la politique de ville sur Paris. 
+
+```{r, result='asis'}
+unzip("paris.zip")
+carreaux = read_sf("paris.shp")
+st_crs(carreaux) = 2154
+
+variables = c("Ind","Men","Men_pauv","Men_1ind","Men_5ind","Men_prop","Men_fmp","Ind_snv",  "Men_surf","Men_coll","Men_mais","Log_av45","Log_45_70","Log_70_90","Log_ap90",   "Log_inc","Log_soc","Ind_0_3","Ind_4_5","Ind_6_10","Ind_11_17","Ind_18_24",   "Ind_25_39","Ind_40_54","Ind_55_64","Ind_65_79","Ind_80p","Ind_inc")
+
+carreaux = carreaux[, append(variables, "IdINSPIRE") ]
+kable(st_drop_geometry(carreaux[1:3,]), caption='carreaux')
+```
+
+
+```{r, result='asis'}
+qpv = read_sf("qp_bdtopo_com_75056_2020.shp")
+st_crs(qpv) = 2154
+kable(st_drop_geometry(qpv[1:3,]), caption='qpv')
+```
+
+### Intersection spatiale entre les deux données spatiales (interpolation spatiale simple)
+
+
+```{r}
+intersection = st_join(qpv, carreaux, st_intersects)
+kable(st_drop_geometry(intersection[1:3,]), caption='intersection')
+```
+
+Aggrégation des données par qpv
+
+```{r}
+qpv_statistic = intersection %>% group_by(code,libelle) %>%summarise_at(variables, sum)
+kable(st_drop_geometry(qpv_statistic))
+```
+
+
+### Intersection spatiale entre les deux données spatiales (au prorata de la surface)
+
+```{r}
+intersection = st_intersection(qpv, carreaux)
+kable(st_drop_geometry(intersection[1:3,]), caption='intersection')
+```
+Aggrégation des données par qpv
+
+```{r}
+ponderation = st_area(intersection$geometry) / 200^2
+intersection = st_drop_geometry(intersection)
+intersection[, variables]=sweep(intersection[, variables], 1, ponderation, "*")
+qpv_statistic = intersection %>% group_by(code,libelle) %>%summarise_at(variables, sum)
+kable(qpv_statistic)
+```
