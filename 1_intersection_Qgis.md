@@ -6,9 +6,12 @@ L'interpolation et l'agrégation peuvent être réalisées directement à l'aide
 
 ![ouverture de la fonction d'interpolation](/images/inter1.PNG)
 
-Dans le champs *Résumés à calculer* cocher uniquement *somme* pour obtenir des totaux.
+Dans le champs *Résumés à calculer* cocher uniquement *somme* pour obtenir des totaux :
+
 ![Veillez à cocher uniquement *somme*](/images/inter2.PNG)
+
 Vous obtenez une couche temporaire avec le résultat escompté :
+
 ![Le résultat](/images/inter3.PNG)
 
-Il ne reste plus qu'à l'enregistrer en *hapefile* en opérant un clic droit sur le nom de la couche dans la fenêtre couches puis à choisir *Exporter/Sauvegarder les entités sous*. En sauvegardant en *shapefile* (.shp) vous obtiendrez un fichier .dbf que vous pourrez ouvrir sous un logiciel statistique pour réaliser l'agrégation.
+Il ne reste plus qu'à l'enregistrer en *shapefile* en opérant un clic droit sur le nom de la couche dans la fenêtre *couches* puis à choisir *Exporter/Sauvegarder les entités sous*. En sauvegardant en *shapefile* (.shp) vous obtiendrez un fichier .dbf que vous pourrez ouvrir dans un tableur. 
