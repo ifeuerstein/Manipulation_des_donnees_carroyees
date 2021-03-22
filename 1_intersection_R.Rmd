@@ -1,9 +1,12 @@
 ---
-title: "Intersection sous R"
+title: "Interpolation entre des données Insee et un fond de carte"
 output:
   html_document:
     df_print: paged
 ---
+
+Deux interpolations sont proposées. Dans la première, les statistiques territoriales sont obtenues en sommant les valeurs des carreaux intersectant les unités spatiales du fond de carte. Dans la deuxième, on rajoute une pondération, la part de la surface des carreaux intersectant les unités spatiales. Pour de petits territoires du fait des effets de bord, les résultats des deux approches peuvent être très différents. 
+
 
 ```{r, echo=FALSE}
 library(knitr)
@@ -11,28 +14,30 @@ library(knitr)
 
 
 ```{r}
-library(sf, verbose=FALSE)
-library(dplyr, verbose=FALSE)
+library(sf, verbose=FALSE, quietly=TRUE, warn.conflicts=FALSE)
+library(dplyr, verbose=FALSE, quietly=TRUE, warn.conflicts=FALSE)
 ```
 
 Chargement des données carroyées et des quartiers de la politique de ville sur Paris. 
 
 ```{r, result='asis'}
-unzip("paris.zip")
+unzip("paris.zip",exdir='/data')
 carreaux = read_sf("paris.shp")
 st_crs(carreaux) = 2154
 
 variables = c("Ind","Men","Men_pauv","Men_1ind","Men_5ind","Men_prop","Men_fmp","Ind_snv",  "Men_surf","Men_coll","Men_mais","Log_av45","Log_45_70","Log_70_90","Log_ap90",   "Log_inc","Log_soc","Ind_0_3","Ind_4_5","Ind_6_10","Ind_11_17","Ind_18_24",   "Ind_25_39","Ind_40_54","Ind_55_64","Ind_65_79","Ind_80p","Ind_inc")
 
 carreaux = carreaux[, append(variables, "IdINSPIRE") ]
-kable(st_drop_geometry(carreaux[1:3,]), caption='carreaux')
+carreaux$surface = st_area(carreaux$geometry)
+
+kable(st_drop_geometry(carreaux[1:2,]), caption='carreaux')
 ```
 
 
 ```{r, result='asis'}
 qpv = read_sf("qp_bdtopo_com_75056_2020.shp")
 st_crs(qpv) = 2154
-kable(st_drop_geometry(qpv[1:3,]), caption='qpv')
+kable(st_drop_geometry(qpv[1:2,]), caption='qpv')
 ```
 
 ### Intersection spatiale entre les deux données spatiales (interpolation spatiale simple)
@@ -40,14 +45,14 @@ kable(st_drop_geometry(qpv[1:3,]), caption='qpv')
 
 ```{r}
 intersection = st_join(qpv, carreaux, st_intersects)
-kable(st_drop_geometry(intersection[1:3,]), caption='intersection')
+kable(st_drop_geometry(intersection[1:2,]), caption='intersection')
 ```
 
 Aggrégation des données par qpv
 
 ```{r}
 qpv_statistic = intersection %>% group_by(code,libelle) %>%summarise_at(variables, sum)
-kable(st_drop_geometry(qpv_statistic))
+kable(st_drop_geometry(qpv_statistic[1:2,]))
 ```
 
 
@@ -55,14 +60,14 @@ kable(st_drop_geometry(qpv_statistic))
 
 ```{r}
 intersection = st_intersection(qpv, carreaux)
-kable(st_drop_geometry(intersection[1:3,]), caption='intersection')
+kable(st_drop_geometry(intersection[1:2,]), caption='intersection')
 ```
 Aggrégation des données par qpv
 
 ```{r}
-ponderation = st_area(intersection$geometry) / 200^2
+ponderation = st_area(intersection$geometry) / intersection$surface
 intersection = st_drop_geometry(intersection)
 intersection[, variables]=sweep(intersection[, variables], 1, ponderation, "*")
 qpv_statistic = intersection %>% group_by(code,libelle) %>%summarise_at(variables, sum)
-kable(qpv_statistic)
+kable(qpv_statistic[1:2,])
 ```
