@@ -4,7 +4,7 @@ Qgis (3.14 Pi) permet de faire facilement l'interpolation entre une couche carro
 
 L'interpolation et l'agrégation peuvent être réalisées directement à l'aide de la fonction *Joindre les attributs par localisation (résumé)* (à ne pas confondre avec la fonction soeur contenue dans le menu *Vecteur*) contenue dans le menu *Boite à outils de traitements/Outils généraux pour les vecteurs*.
 
-![image info](./images/inter1.png)
+![image info](images/inter1.png)
 
 Dans le champs *Résumés à calculer* cocher uniquement *somme* pour obtenir des totaux.
 
