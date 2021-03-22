@@ -1,6 +1,6 @@
 # Interpolation entre des données Insee et un fond de carte
 
-Qgis (3.14 Pi) permet de faire facilement l'interpolation entre une couche carroyée et un fond de carte. L'ouverture des couches de carreaux (paris.shp) et des quartiers de la politique de la ville s'effectue à l'aide du menu *Couche\ajouter une couche\Ajouter une couche vecteur*.
+Qgis (3.14 Pi) permet de faire facilement l'interpolation entre une couche carroyée et un fond de carte. L'ouverture des couches de carreaux (paris.shp) et des quartiers de la politique de la ville s'effectue à l'aide du menu **Couche\ajouter une couche\Ajouter une couche vecteur**.
 
 
 
