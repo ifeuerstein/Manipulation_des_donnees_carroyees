@@ -10,6 +10,7 @@ Les fonds géographiques (Quartiers Politiques de la Ville sur Paris et carraux 
 * 1_intersection_python.ipynb : le code pour l'intersection spatiale sous Python (notebook)
 * 1_intersection_Qgis.md : la démarche pour réaliser une intersection spatiale sous Qgis
 * 2_Exploration_pauvreté.ipynb : des exemples de cartes sur la pauvreté
+* Vous pouvez également utiliser une [application dédiée](https://gridinshape.herokuapp.com/) 
 
 
 
